@@ -8,6 +8,7 @@ import co.uk.gkortsaridis.woombatcodetest.repositories.SubredditListRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.lang.Exception
 
 class SubredditListViewModel(private val repository: SubredditListRepository): ViewModel() {
 
@@ -23,15 +24,20 @@ class SubredditListViewModel(private val repository: SubredditListRepository): V
 
     fun getAndroidSubreddits(after: String? = null): MutableLiveData<Resource<ArrayList<RedditHotItem>>> {
         subredditList.postValue(Resource.loading(null))
-        compositeDisposable.add(
-            repository.getAndroidSubreddits(after)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { subredditList.postValue(Resource.success(data = it.data.children)); currentAfterValue = it.data.after },
-                    { subredditList.postValue(Resource.error(msg = it.localizedMessage, data = null)) }
-                )
-        )
+
+        try{
+            compositeDisposable.add(
+                repository.getAndroidSubreddits(after)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        { subredditList.postValue(Resource.success(data = it.data?.children)); currentAfterValue = it.data?.after },
+                        { subredditList.postValue(Resource.error(msg = it.localizedMessage, data = null)) }
+                    )
+            )
+        }catch (e: Exception) {
+            subredditList.postValue(Resource.error(e.localizedMessage, data = null))
+        }
 
         return subredditList
     }

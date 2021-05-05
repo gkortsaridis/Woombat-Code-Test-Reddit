@@ -56,6 +56,8 @@ class SubredditsAdapter(
             description?.text = item.data.selftext
             author?.text = item.data.author_fullname
 
+            description?.visibility = if(item.data.selftext.isNullOrBlank()) View.GONE else View.VISIBLE
+
             container?.setOnClickListener { listener?.onRedditClicked(item) }
         }
     }

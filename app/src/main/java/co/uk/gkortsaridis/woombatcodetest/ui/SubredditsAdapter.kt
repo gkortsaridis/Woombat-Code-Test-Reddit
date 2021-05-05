@@ -52,11 +52,11 @@ class SubredditsAdapter(
         }
 
         fun bindItems(item: RedditHotItem, listener: RedditItemClickLIstener?) {
-            title?.text = item.data.title
-            description?.text = item.data.selftext
-            author?.text = item.data.author_fullname
+            title?.text = item.data?.title
+            description?.text = item.data?.selftext
+            author?.text = item.data?.author_fullname
 
-            description?.visibility = if(item.data.selftext.isNullOrBlank()) View.GONE else View.VISIBLE
+            description?.visibility = if(item.data?.selftext.isNullOrBlank()) View.GONE else View.VISIBLE
 
             container?.setOnClickListener { listener?.onRedditClicked(item) }
         }

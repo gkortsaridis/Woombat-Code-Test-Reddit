@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity(), RedditItemClickLIstener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        viewModel = ViewModelProvider(this, ViewModelFactory()).get(SubredditListViewModel::class.java)
+
         //I am allowing Main Thread Queries, mainly for simplicity and to quickly proceed with my time
         //On a production app, all DB call will of course be handles by a background thread
         val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "offline-reddits").allowMainThreadQueries().build()
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity(), RedditItemClickLIstener {
         reddits_rv.layoutManager = LinearLayoutManager(this)
         reddits_rv.adapter = adapter
 
+        //Load next posts page once we reach the bottom of the recyclerview
         reddits_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity(), RedditItemClickLIstener {
             }
         })
 
-        viewModel = ViewModelProvider(this, ViewModelFactory()).get(SubredditListViewModel::class.java)
+        //Observe the UI data from viewmodel
         viewModel.getAndroidSubreddits(after = null, dao= dao, forceRefresh = !USE_CACHED_DATA).observe(this, {
             when (it.status) {
                 Status.SUCCESS -> {

@@ -55,6 +55,10 @@ class SubredditListViewModelTest {
         Mockito.doReturn(subredditsObservable).`when`(repository).getAndroidSubreddits(null)
         Mockito.doReturn(subredditsObservable).`when`(repository).getAndroidSubreddits(CORRECT_AFTER_ID)
         Mockito.doThrow(customError).`when`(repository).getAndroidSubreddits(INCORRECT_AFTER_ID)
+
+        Mockito.doReturn(subredditsSuccess).`when`(viewModel).getAndroidSubreddits(null)
+        Mockito.doReturn(subredditsSuccess).`when`(viewModel).getAndroidSubreddits(CORRECT_AFTER_ID)
+        Mockito.doReturn(subredditsError).`when`(viewModel).getAndroidSubreddits(INCORRECT_AFTER_ID)
     }
 
     @Test
@@ -65,8 +69,8 @@ class SubredditListViewModelTest {
 
     @Test
     fun viewModelSubredditsSuccess() {
-        assertThat(repository.getAndroidSubreddits(null)).isEqualTo(subredditsObservable)
-        assertThat(repository.getAndroidSubreddits(CORRECT_AFTER_ID)).isEqualTo(subredditsObservable)
+        assertThat(viewModel.getAndroidSubreddits(null)).isEqualTo(subredditsSuccess)
+        assertThat(viewModel.getAndroidSubreddits(CORRECT_AFTER_ID)).isEqualTo(subredditsSuccess)
     }
 
     @Test(expected= Exception::class)

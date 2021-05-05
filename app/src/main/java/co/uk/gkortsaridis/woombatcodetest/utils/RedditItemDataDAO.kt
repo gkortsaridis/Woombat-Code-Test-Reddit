@@ -14,6 +14,9 @@ interface RedditItemDataDAO {
     @Insert
     fun insert(item: RedditHotItemData)
 
+    @Query("SELECT * FROM reddithotitemdata WHERE title LIKE :title LIMIT 1")
+    fun findByTitle(title: String): RedditHotItemData
+
     @Insert
     fun insertAll(items: List<RedditHotItemData>)
 
